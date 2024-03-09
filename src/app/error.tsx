@@ -3,7 +3,7 @@
 import { BackgroundImage } from '@/components/BackgroundImage'
 import { Button } from '@/components/Button'
 import { Container } from '@/components/Container'
-import Layout from './layout'
+import { Layout } from '@/components/Layout'
 
 type Props = {
   error: Error
@@ -11,8 +11,9 @@ type Props = {
 }
 
 export default function Error({ error, reset }: Props) {
+  console.log(error, reset)
   return (
-    <Layout showFooter={false}>
+    <Layout showFooter={true}>
       <div className="relative flex h-full items-center py-20 sm:py-36">
         <BackgroundImage className="-top-36 bottom-0" />
         <Container className="relative flex w-full flex-col items-center">
