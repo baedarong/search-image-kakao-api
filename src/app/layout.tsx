@@ -17,7 +17,7 @@ const dmSans = DM_Sans({
   variable: '--font-dm-sans',
 })
 
-export const metadata: Metadata = {
+const metadata: Metadata = {
   title: {
     template: '%s - DeceptiConf',
     default: 'DeceptiConf - A community-driven design conference',
