@@ -1,8 +1,4 @@
-import {
-  IMenuMutate,
-  IMenuOrderMutate,
-  IUserSubMenu,
-} from '@/types/menu/manage'
+import { IMenuMutate, IMenuOrderMutate, IUserSubMenu } from '@/types/image'
 import { instance } from './common'
 
 // PUT 9.1.3 사용자 메뉴 수정

@@ -1,21 +1,19 @@
 'use client'
 
 import clsx from 'clsx'
-import { useEffect, useState } from 'react'
+import { Dispatch, SetStateAction } from 'react'
 
-type ITab = {
+export type ITab = {
   name: string
   current: boolean
 }
 
-const tabData: ITab[] = [
-  { name: '이미지 검색', current: true },
-  { name: '즐겨찾기', current: false },
-]
+interface ITabProps {
+  tabs: ITab[]
+  setTabs: Dispatch<SetStateAction<ITab[]>>
+}
 
-export default function Tabs() {
-  const [tabs, setTabs] = useState<ITab[]>(tabData)
-
+export default function Tabs({ tabs, setTabs }: Readonly<ITabProps>) {
   const changeTabState = (selectedTab: ITab) => {
     // 새로운 탭 상태를 생성. 클릭된 탭은 'current'를 true로 설정 후 나머지 탭들은 false로 설정
     const newTabs = tabs.map((tab) => ({

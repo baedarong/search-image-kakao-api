@@ -1,8 +1,11 @@
 import { type Metadata } from 'next'
 import { DM_Sans, Inter } from 'next/font/google'
 import clsx from 'clsx'
+import 'react-toastify/dist/ReactToastify.css'
 
 import '@/styles/tailwind.css'
+import ReactQueryProviders from '@/utils/react-query-provider'
+import { ToastContainer } from 'react-toastify'
 
 const inter = Inter({
   subsets: ['latin'],
@@ -41,7 +44,14 @@ export default function RootLayout({
       )}
     >
       <body className="flex min-h-full">
-        <div className="flex w-full flex-col">{children}</div>
+        <ReactQueryProviders>
+          <ToastContainer
+            hideProgressBar
+            position="top-center"
+            theme="colored"
+          />
+          <div className="flex w-full flex-col">{children}</div>
+        </ReactQueryProviders>
       </body>
     </html>
   )

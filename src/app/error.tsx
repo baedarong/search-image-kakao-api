@@ -11,7 +11,6 @@ type Props = {
 }
 
 export default function Error({ error, reset }: Props) {
-  console.log(error, reset)
   return (
     <Layout showFooter={true}>
       <div className="relative flex h-full items-center py-20 sm:py-36">
@@ -24,7 +23,7 @@ export default function Error({ error, reset }: Props) {
             Error Invoked!
           </h1>
           <p className="mt-4 text-lg tracking-tight text-blue-900">
-            Sorry, we couldn’t find the page you’re looking for.
+            Sorry, we got the errors like : {error.message}
           </p>
           <Button href="/" className="mt-8">
             Try again

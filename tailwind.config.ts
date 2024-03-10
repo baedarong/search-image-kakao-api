@@ -1,4 +1,3 @@
-import headlessuiPlugin from '@headlessui/tailwindcss'
 import { type Config } from 'tailwindcss'
 
 export default {
@@ -33,5 +32,9 @@ export default {
       },
     },
   },
-  plugins: [headlessuiPlugin, require('@tailwindcss/forms')],
+  plugins: [
+    require('@headlessui/tailwindcss'),
+    require('@tailwindcss/forms'),
+    require('@tailwindcss/aspect-ratio'),
+  ],
 } satisfies Config

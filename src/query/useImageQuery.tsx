@@ -3,19 +3,22 @@ import {
   postMenuOrderFetcher,
   deleteMenuFetcher,
 } from '@/api/mutations'
-import { menusFetcher } from '@/api/quries'
+import { getImages } from '@/api/quries'
 import {
   IMenuMutate,
   IMenuOrderMutate,
+  ISearchImage,
   IUserSubMenu,
-} from '@/types/menu/manage'
+} from '@/types/image'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'react-toastify'
 
-const useMenuQuery = () => {
-  // GET 9.1.1 사용자 메뉴 리스트 조회
-  const useMenus = (params: { groupId: string; groupName: string }) => {
-    return useQuery(['menus', params], () => menusFetcher(params))
+const useImageQuery = () => {
+  // 이미지 검색
+  const useSearchImages = (params: ISearchImage) => {
+    return useQuery(['images', params], () => getImages(params), {
+      enabled: !!params.query,
+    })
   }
 
   // PUT 9.1.3 사용자 메뉴 수정
@@ -66,7 +69,7 @@ const useMenuQuery = () => {
     })
   }
 
-  return { useMenus, usePutMenu, usePostMenuOrder, useDeleteMenu }
+  return { useSearchImages, usePutMenu, usePostMenuOrder, useDeleteMenu }
 }
 
-export default useMenuQuery
+export default useImageQuery

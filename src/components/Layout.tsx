@@ -10,7 +10,7 @@ export function Layout({
 }) {
   return (
     <>
-      <Header />
+      {/* <Header /> */}
       <main className="flex-auto">{children}</main>
       {showFooter && <Footer />}
     </>
