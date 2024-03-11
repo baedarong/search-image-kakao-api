@@ -17,7 +17,7 @@ export default function Home() {
       <Tabs tabs={tabs} setTabs={setTabs} />
       <div>
         <div style={{ display: tabs[0].current ? 'block' : 'none' }}>
-          <Search />
+          <Search show={tabs[0].current} />
         </div>
         <div style={{ display: tabs[1].current ? 'block' : 'none' }}>
           <Favorite show={tabs[1].current} />

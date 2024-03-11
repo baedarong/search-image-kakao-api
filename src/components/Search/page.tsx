@@ -18,7 +18,7 @@ import { toast, useToast } from 'react-toastify'
 // OK: 이미 보관된 이미지는 특별한 표시를 보여줍니다. (좋아요/별표/하트 등)
 // OK: 보관된 이미지를 다시 선택하여 보관함에서 제거 가능합니다.
 
-export default function Search() {
+export default function Search(props: { show: boolean }) {
   const [inputValue, setInputValue] = useState('')
   const [searchParams, setSearchParams] = useState<ISearchImage>({
     query: '',
@@ -36,11 +36,28 @@ export default function Search() {
     },
     documents: [],
   })
-
+  const [scrollPosition, setScrollPosition] = useState(0)
   const [isFetching, setIsFetching] = useState(false)
   const [page, setPage] = useState(1)
+
+  // 페이지가 로드될 때 세션 스토리지에서 스크롤 위치를 가져와 설정합니다.
+  useEffect(() => {
+    if (props.show) {
+      const storedPosition = sessionStorage.getItem('scrollPosition')
+      if (storedPosition) {
+        window.scrollTo(0, parseInt(storedPosition))
+      }
+    }
+    // 컴포넌트가 unmount될 때 스크롤 위치를 세션 스토리지에 저장합니다.
+    return () => {
+      sessionStorage.setItem('scrollPosition', scrollPosition.toString())
+    }
+  }, [props.show])
+
   useEffect(() => {
     const handleScroll = () => {
+      const currentPosition = window.scrollY
+      setScrollPosition(currentPosition)
       if (!isFetching) {
         // 화면 전체의 높이
         const windowHeight = window.innerHeight
