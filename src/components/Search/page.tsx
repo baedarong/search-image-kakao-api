@@ -1,7 +1,7 @@
 'use client'
 
 import useImageQuery from '@/query/useImageQuery'
-import { IDocument, IImages, ISearchImage } from '@/types/image'
+import { IImage, IImages, ISearchMedia } from '@/types/image'
 import { formatDate } from '@/utils/dateConverter'
 import { HeartIcon } from '@heroicons/react/24/outline'
 import clsx from 'clsx'
@@ -20,14 +20,15 @@ import { toast, useToast } from 'react-toastify'
 
 export default function Search(props: { show: boolean }) {
   const [inputValue, setInputValue] = useState('')
-  const [searchParams, setSearchParams] = useState<ISearchImage>({
+  const [searchParams, setSearchParams] = useState<ISearchMedia>({
     query: '',
     sort: 'recency',
     page: 1,
     size: 20,
   }) // 검색조건
-  const { useSearchImages } = useImageQuery()
-  const { data: images, isLoading, error } = useSearchImages(searchParams)
+  const { useSearchImages, useSearchVideos } = useImageQuery()
+  const { data: images } = useSearchImages(searchParams)
+  // const { data: videos } = useSearchVideos(searchParams)
   const [data, setData] = useState<IImages>({
     meta: {
       total_count: 0,
@@ -89,7 +90,7 @@ export default function Search(props: { show: boolean }) {
   }, [page])
 
   // localStorage에서 모든 '좋아요' 상태를 가져오는 함수
-  const getLikedItems = (): IDocument[] => {
+  const getLikedItems = (): IImage[] => {
     const likedItemsJSON = localStorage.getItem('myImages')
     return likedItemsJSON ? JSON.parse(likedItemsJSON) : []
   }
@@ -102,8 +103,8 @@ export default function Search(props: { show: boolean }) {
 
   // isLiked 필드 추가
   const addIsLiked = (
-    documents: IDocument[],
-  ): (IDocument & { isLiked: boolean })[] => {
+    documents: IImage[],
+  ): (IImage & { isLiked: boolean })[] => {
     return documents.map((document) => ({
       ...document,
       isLiked: isLiked(document.thumbnail_url),
@@ -169,11 +170,11 @@ export default function Search(props: { show: boolean }) {
     })
   }
 
-  const handleClickImage = (image: IDocument) => {
+  const handleClickImage = (image: IImage) => {
     try {
       // 기존에 저장된 정보 가져오기
       const existingImagesJSON = localStorage.getItem('myImages')
-      let existingImages: IDocument[] = []
+      let existingImages: IImage[] = []
       if (existingImagesJSON) {
         // 기존에 저장된 정보가 있다면 JSON 문자열을 파싱하여 배열로 변환
         existingImages = JSON.parse(existingImagesJSON)
@@ -295,11 +296,10 @@ export default function Search(props: { show: boolean }) {
                       height={image.height}
                     />
                     <div
-                      className="flex items-end p-4 opacity-0 group-hover:opacity-100"
+                      className="flex items-end p-4 opacity-100"
                       aria-hidden="true"
                     >
-                      <div className="flex w-full justify-between rounded-md bg-white bg-opacity-75 px-4 py-2 text-center text-sm font-medium text-gray-900 backdrop-blur backdrop-filter">
-                        <span>보관함에 저장하기</span>
+                      <div className="flex w-auto justify-items-end rounded-md bg-white bg-opacity-75 px-4 py-2 text-center text-sm font-medium text-gray-900 backdrop-blur backdrop-filter">
                         <HeartIcon
                           className={clsx(
                             '"h-6 text-gray-400" w-6',

@@ -1,4 +1,4 @@
-export interface ISearchImage {
+export interface ISearchMedia {
   query: string
   sort: 'accuracy' | 'recency'
   page: number
@@ -11,7 +11,7 @@ export interface IMeta {
   is_end: boolean
 }
 
-export interface IDocument {
+export interface IImage {
   collection: string
   thumbnail_url: string
   image_url: string
@@ -25,5 +25,19 @@ export interface IDocument {
 
 export interface IImages {
   meta: IMeta
-  documents: IDocument[]
+  documents: IImage[]
+}
+
+export interface IVideo {
+  title: string
+  play_time: number
+  thumbnail: string
+  url: string
+  datetime: string
+  author: string
+}
+
+export interface IVideos {
+  meta: IMeta
+  documents: IVideo[]
 }

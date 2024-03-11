@@ -1,6 +1,6 @@
 'use client'
 
-import { IDocument } from '@/types/image'
+import { IImage } from '@/types/image'
 import { formatDate } from '@/utils/dateConverter'
 import { useEffect, useState } from 'react'
 import Image from 'next/image'
@@ -11,22 +11,22 @@ import { toast } from 'react-toastify'
 // OK: 적혀있지 않은 내용은 자유롭게 작성하시면 됩니다. (요건을 침해하지 않는 범위에서 기능 추가 등)
 
 export default function Favorite(props: { show: boolean }) {
-  const [images, setImages] = useState<IDocument[]>([])
+  const [images, setImages] = useState<IImage[]>([])
 
   useEffect(() => {
     const existingImagesJSON = localStorage.getItem('myImages')
     if (existingImagesJSON) {
-      const existingImages: IDocument[] = JSON.parse(existingImagesJSON)
+      const existingImages: IImage[] = JSON.parse(existingImagesJSON)
       setImages(existingImages)
     }
   }, [props.show]) // 컴포넌트가 처음 렌더링될 때만 실행
-  
+
   /*
-  const handleRemoveImage = (clickedImage: IDocument) => {
+  const handleRemoveImage = (clickedImage: IImage) => {
     try {
       const existingImagesJSON = localStorage.getItem('myImages')
       if (existingImagesJSON) {
-        const existingImages: IDocument[] = JSON.parse(existingImagesJSON)
+        const existingImages: IImage[] = JSON.parse(existingImagesJSON)
         // 클릭된 이미지를 제외하고 다시 로컬 스토리지에 저장
         const updatedImages = existingImages.filter(
           (image) => image.image_url !== clickedImage.image_url,
