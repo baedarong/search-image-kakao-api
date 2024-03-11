@@ -74,7 +74,6 @@ export default function Search() {
       // 기존에 저장된 정보 가져오기
       const existingImagesJSON = localStorage.getItem('myImages')
       let existingImages: IDocument[] = []
-
       if (existingImagesJSON) {
         // 기존에 저장된 정보가 있다면 JSON 문자열을 파싱하여 배열로 변환
         existingImages = JSON.parse(existingImagesJSON)
