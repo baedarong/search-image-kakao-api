@@ -1,5 +1,5 @@
 import { IImages, ISearchImage } from '@/types/image'
-import { instance, Response } from './common'
+import { instance } from './common'
 import { toast } from 'react-toastify'
 
 // GET 이미지 검색하기
