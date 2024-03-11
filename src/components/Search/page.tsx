@@ -74,7 +74,7 @@ export default function Search() {
   // localStorage에서 모든 '좋아요' 상태를 가져오는 함수
   const getLikedItems = (): IDocument[] => {
     const likedItemsJSON = localStorage.getItem('myImages')
-    return likedItemsJSON ? JSON.parse(likedItemsJSON) : {}
+    return likedItemsJSON ? JSON.parse(likedItemsJSON) : []
   }
 
   // 특정 아이템의 '좋아요' 상태를 확인하여 업데이트 하는 함수
