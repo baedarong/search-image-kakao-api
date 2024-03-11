@@ -43,6 +43,7 @@ export interface IDocument {
   display_sitename: string
   doc_url: string
   datetime: string
+  liked?: boolean
 }
 
 export interface IImages {

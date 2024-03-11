@@ -20,8 +20,14 @@ export default function Home() {
   return (
     <>
       <Tabs tabs={tabs} setTabs={setTabs} />
-      {tabs[0].current === true && <Search />}
-      {tabs[1].current === true && <Favorite />}
+      <div>
+        <div style={{ display: tabs[0].current ? 'block' : 'none' }}>
+          <Search />
+        </div>
+        <div style={{ display: tabs[1].current ? 'block' : 'none' }}>
+          <Favorite show={tabs[1].current} />
+        </div>
+      </div>
     </>
   )
 }

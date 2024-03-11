@@ -46,9 +46,9 @@ export default function RootLayout({
       <body className="flex min-h-full">
         <ReactQueryProviders>
           <ToastContainer
-            hideProgressBar
-            position="top-center"
+            position="top-right"
             theme="colored"
+            autoClose={1500}
           />
           <div className="flex w-full flex-col">{children}</div>
         </ReactQueryProviders>
