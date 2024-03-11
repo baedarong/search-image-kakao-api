@@ -3,6 +3,8 @@
 import useImageQuery from '@/query/useImageQuery'
 import { IDocument, IImages, ISearchImage } from '@/types/image'
 import { formatDate } from '@/utils/dateConverter'
+import { HeartIcon } from '@heroicons/react/24/outline'
+import clsx from 'clsx'
 
 import Image from 'next/image'
 import { SetStateAction, useEffect, useState } from 'react'
@@ -11,7 +13,7 @@ import { toast } from 'react-toastify'
 // * 첫 번째 fragment : 검색 결과
 // OK: 검색어를 입력할 수 있습니다.
 // OK: 검색된 이미지 리스트가 나타납니다. 각 아이템에는 이미지와 함께 날짜와 시간을 표시합니다.
-// 스크롤을 통해 다음 페이지를 불러옵니다.
+// OK: 스크롤을 통해 다음 페이지를 불러옵니다.
 // OK: 리스트에서 특정 이미지를 선택하여 '내 보관함'으로 저장할 수 있습니다.
 // OK: 이미 보관된 이미지는 특별한 표시를 보여줍니다. (좋아요/별표/하트 등)
 // OK: 보관된 이미지를 다시 선택하여 보관함에서 제거 가능합니다.
@@ -22,7 +24,7 @@ export default function Search() {
     query: '',
     sort: 'recency',
     page: 1,
-    size: 10,
+    size: 20,
   }) // 검색조건
   const { useSearchImages } = useImageQuery()
   const { data: images, isLoading, error } = useSearchImages(searchParams)
@@ -35,11 +37,64 @@ export default function Search() {
     documents: [],
   })
 
+  const [isFetching, setIsFetching] = useState(false)
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const windowHeight = window.innerHeight
+      // 스크롤된 높이
+      const scrollHeight = document.documentElement.scrollHeight
+      // 스크롤된 높이 - 화면 전체의 높이
+      const scrolled = window.scrollY
+
+      // 화면의 4/5 지점 계산
+      const fourFifth = (scrollHeight - windowHeight) * (4 / 5)
+
+      // 현재 스크롤 위치가 화면의 4/5쯤에 도달했을 때 setSearchParams 호출
+      if (scrolled >= fourFifth) {
+        setIsFetching(true)
+      }
+    }
+
+    window.addEventListener('scroll', handleScroll)
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
+
+  useEffect(() => {
+    if (isFetching && !data.meta.is_end && searchParams.query) {
+      setIsFetching(false)
+      setSearchParams({ ...searchParams, page: searchParams.page + 1 })
+    } else if (data.meta.is_end) setIsFetching(false)
+  }, [isFetching])
+
+  // localStorage에서 모든 '좋아요' 상태를 가져오는 함수
+  const getLikedItems = (): IDocument[] => {
+    const likedItemsJSON = localStorage.getItem('myImages')
+    return likedItemsJSON ? JSON.parse(likedItemsJSON) : {}
+  }
+
+  // 특정 아이템의 '좋아요' 상태를 확인하여 업데이트 하는 함수
+  const isLiked = (image_id: string): boolean => {
+    const likedItems = getLikedItems()
+    return likedItems.some((item) => item.thumbnail_url === image_id)
+  }
+
+  // isLiked 필드 추가
+  const addIsLiked = (
+    documents: IDocument[],
+  ): (IDocument & { isLiked: boolean })[] => {
+    return documents.map((document) => ({
+      ...document,
+      isLiked: isLiked(document.thumbnail_url),
+    }))
+  }
+
   useEffect(() => {
     if (!images || !images?.documents) return
+    const addLikedList = addIsLiked(images.documents)
     setData({
       meta: images.meta,
-      documents: [...data.documents, ...images.documents],
+      documents: [...data.documents, ...addLikedList],
     })
   }, [images])
 
@@ -67,6 +122,28 @@ export default function Search() {
       })
     }
     setSearchParams((prevState) => ({ ...prevState, query: inputValue }))
+    setIsFetching(false)
+  }
+
+  // 클릭한 요소의 isLiked 값을 변경하는 함수
+  const toggleIsLiked = (documentIndex: number) => {
+    setData((prevData) => {
+      const newDocuments = prevData.documents.map((document, index) => {
+        if (index === documentIndex) {
+          // 클릭한 요소의 isLiked 값을 반대로 변경한 새로운 객체를 반환합니다.
+          return {
+            ...document,
+            isLiked: !document.isLiked,
+          }
+        }
+        return document // 변경하지 않을 경우 기존 객체를 반환합니다.
+      })
+
+      return {
+        ...prevData,
+        documents: newDocuments, // 변경된 documents를 포함한 새로운 상태를 반환합니다.
+      }
+    })
   }
 
   const handleClickImage = (image: IDocument) => {
@@ -95,6 +172,7 @@ export default function Search() {
       // 이미지가 보관함에 없는 경우 추가
       const updatedImages = [...existingImages, image] // 보관한 순서대로 저장
       localStorage.setItem('myImages', JSON.stringify(updatedImages))
+
       toast.success('이미지를 내 보관함에 추가했습니다!')
     } catch (error) {
       toast.error('이미지를 보관함에 추가하거나 제거하는데 실패했습니다.')
@@ -180,7 +258,10 @@ export default function Search() {
                 <div
                   key={imageIndex}
                   className="group relative"
-                  onClick={() => handleClickImage(image)}
+                  onClick={() => {
+                    handleClickImage(image)
+                    toggleIsLiked(imageIndex)
+                  }}
                 >
                   <div className="aspect-h-3 aspect-w-4 cursor-pointer overflow-hidden rounded-lg bg-gray-100">
                     <Image
@@ -196,20 +277,12 @@ export default function Search() {
                     >
                       <div className="flex w-full justify-between rounded-md bg-white bg-opacity-75 px-4 py-2 text-center text-sm font-medium text-gray-900 backdrop-blur backdrop-filter">
                         <span>보관함에 저장하기</span>
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          strokeWidth={1.5}
-                          stroke="currentColor"
-                          className="h-6 w-6"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
-                          />
-                        </svg>
+                        <HeartIcon
+                          className={clsx(
+                            '"h-6 text-gray-400" w-6',
+                            image.isLiked && 'fill-red-400 text-red-400',
+                          )}
+                        />
                       </div>
                     </div>
                   </div>

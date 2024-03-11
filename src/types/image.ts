@@ -23,9 +23,9 @@ export interface IMenuOrderMutate {
 
 export interface ISearchImage {
   query: string
-  sort?: 'accuracy' | 'recency'
-  page?: number
-  size?: number
+  sort: 'accuracy' | 'recency'
+  page: number
+  size: number
 }
 
 export interface IMeta {
@@ -43,7 +43,7 @@ export interface IDocument {
   display_sitename: string
   doc_url: string
   datetime: string
-  liked?: boolean
+  isLiked?: boolean
 }
 
 export interface IImages {

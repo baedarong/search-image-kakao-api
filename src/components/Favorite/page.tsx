@@ -20,7 +20,8 @@ export default function Favorite(props: { show: boolean }) {
       setImages(existingImages)
     }
   }, [props.show]) // 컴포넌트가 처음 렌더링될 때만 실행
-
+  
+  /*
   const handleRemoveImage = (clickedImage: IDocument) => {
     try {
       const existingImagesJSON = localStorage.getItem('myImages')
@@ -38,7 +39,7 @@ export default function Favorite(props: { show: boolean }) {
       toast.error('보관함에서 이미지를 제거하는데 실패했습니다!')
     }
   }
-
+  */
   return (
     <div>
       {images.length > 0 ? (
@@ -55,7 +56,7 @@ export default function Favorite(props: { show: boolean }) {
                 <div
                   key={imageIndex}
                   className="group relative"
-                  onClick={() => handleRemoveImage(image)}
+                  // onClick={() => handleRemoveImage(image)}
                 >
                   <div className="aspect-h-3 aspect-w-4 cursor-pointer overflow-hidden rounded-lg bg-gray-100">
                     <Image
@@ -65,14 +66,14 @@ export default function Favorite(props: { show: boolean }) {
                       width={image.width}
                       height={image.height}
                     />
-                    <div
+                    {/* <div
                       className="flex items-end p-4 opacity-0 group-hover:opacity-100"
                       aria-hidden="true"
                     >
                       <div className="w-full  rounded-md bg-white bg-opacity-75 px-4 py-2 text-center text-sm font-medium text-gray-900 backdrop-blur backdrop-filter">
                         삭제하기
                       </div>
-                    </div>
+                    </div> */}
                   </div>
                   <div className="mt-4 flex items-center justify-between space-x-8 text-base font-medium text-gray-900">
                     <h3>

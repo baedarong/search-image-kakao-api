@@ -26,9 +26,9 @@ export default function Tabs({ tabs, setTabs }: Readonly<ITabProps>) {
   }
 
   return (
-    <div>
-      <div className="block">
-        <div className="border-b border-gray-200">
+    <div className="relative h-20">
+      <div className="fixed left-0 top-0 z-10 w-full bg-white ">
+        <div className="border-b border-gray-200 pt-2">
           <nav className="-mb-px flex" aria-label="Tabs">
             {tabs.map((tab) => (
               <button
