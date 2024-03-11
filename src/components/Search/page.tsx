@@ -8,7 +8,7 @@ import clsx from 'clsx'
 
 import Image from 'next/image'
 import { SetStateAction, useEffect, useState } from 'react'
-import { toast } from 'react-toastify'
+import { toast, useToast } from 'react-toastify'
 
 // * 첫 번째 fragment : 검색 결과
 // OK: 검색어를 입력할 수 있습니다.
@@ -38,34 +38,38 @@ export default function Search() {
   })
 
   const [isFetching, setIsFetching] = useState(false)
-
+  const [page, setPage] = useState(1)
   useEffect(() => {
     const handleScroll = () => {
-      const windowHeight = window.innerHeight
-      // 스크롤된 높이
-      const scrollHeight = document.documentElement.scrollHeight
-      // 스크롤된 높이 - 화면 전체의 높이
-      const scrolled = window.scrollY
+      if (!isFetching) {
+        // 화면 전체의 높이
+        const windowHeight = window.innerHeight
+        // 스크롤된 높이
+        const scrollHeight = document.documentElement.scrollHeight
+        // 스크롤된 높이 - 화면 전체의 높이
+        const scrolled = scrollHeight - windowHeight
+        // 스크롤된 높이 * 4/5
+        const fourFifth = scrolled * (4 / 5)
 
-      // 화면의 4/5 지점 계산
-      const fourFifth = (scrollHeight - windowHeight) * (4 / 5)
-
-      // 현재 스크롤 위치가 화면의 4/5쯤에 도달했을 때 setSearchParams 호출
-      if (scrolled >= fourFifth) {
-        setIsFetching(true)
+        // 현재 스크롤 위치가 화면의 4/5쯤에 도달했을 때 setSearchParams 호출
+        if (window.scrollY >= fourFifth) {
+          setIsFetching(true) // 스크롤 중임을 표시
+          setPage(page + 1)
+        }
       }
     }
 
     window.addEventListener('scroll', handleScroll)
-    return () => window.removeEventListener('scroll', handleScroll)
-  }, [])
+
+    // 컴포넌트가 unmount될 때 리스너 해제
+    return () => {
+      window.removeEventListener('scroll', handleScroll)
+    }
+  }, [isFetching]) // isScrolling 상태가 변경될 때마다 이펙트 재실행
 
   useEffect(() => {
-    if (isFetching && !data.meta.is_end && searchParams.query) {
-      setIsFetching(false)
-      setSearchParams({ ...searchParams, page: searchParams.page + 1 })
-    } else if (data.meta.is_end) setIsFetching(false)
-  }, [isFetching])
+    setSearchParams({ ...searchParams, page: page })
+  }, [page])
 
   // localStorage에서 모든 '좋아요' 상태를 가져오는 함수
   const getLikedItems = (): IDocument[] => {
@@ -96,6 +100,7 @@ export default function Search() {
       meta: images.meta,
       documents: [...data.documents, ...addLikedList],
     })
+    setIsFetching(false)
   }, [images])
 
   const handleChange = (event: {
@@ -106,6 +111,7 @@ export default function Search() {
 
   const handleSubmit = (event: { preventDefault: () => void }) => {
     event.preventDefault() // 폼 제출 시 페이지 새로고침 방지
+    setPage(1)
     if (!inputValue.trim()) {
       setInputValue('')
       return toast.error('검색어를 입력해주세요.')
