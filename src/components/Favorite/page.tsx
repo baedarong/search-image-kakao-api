@@ -25,13 +25,16 @@ export default function Favorite(props: { show: boolean }) {
     try {
       const existingImagesJSON = localStorage.getItem('myImages')
       if (existingImagesJSON) {
-        const existingImages: IImage[] = JSON.parse(existingImagesJSON)
+        const existingImages: (IImage | IVideo)[] =
+          JSON.parse(existingImagesJSON)
         // 클릭된 이미지를 제외하고 다시 로컬 스토리지에 저장
         const updatedImages = existingImages.filter((image) =>
           image.type === 'image'
             ? image.thumbnail_url !== clickedDoc.thumbnail_url
-            : image.thumbnail === clickedDoc.thumbnail,
+            : image.thumbnail !== clickedDoc.thumbnail,
         )
+
+        console.log(updatedImages)
         localStorage.setItem('myImages', JSON.stringify(updatedImages))
         setDocs(updatedImages)
         toast.success('보관함에서 이미지를 삭제했습니다!')

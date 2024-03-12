@@ -16,7 +16,7 @@ OK: 두 검색 결과를 합친 리스트를 사용합니다.
 OK: 구체적인 사용 필드는 아래와 같습니다.
 이미지 검색 API 의 thumbnail_url 필드 이용
 동영상 검색 API 의 thumbnail 필드 이용
-TOBE: 두 검색 결과를 datetime 필드를 이용해 정렬하여 출력합니다. (최신부터 나타나도록)
+OK: 두 검색 결과를 datetime 필드를 이용해 정렬하여 출력합니다. (최신부터 나타나도록)
 
 * 첫 번째 fragment : 검색 결과
 OK: 검색어를 입력할 수 있습니다.
@@ -140,7 +140,7 @@ export default function Search(props: { show: boolean }) {
     }))
   }
 
-  function sortByDatetimeDesc(dataArray: (IVideo | IImage)[]) {
+  const sortByDatetimeDesc = (dataArray: (IVideo | IImage)[]) => {
     return dataArray.sort((a, b) => {
       // 날짜를 파싱하여 Date 객체로 변환
       const dateA = new Date(a.datetime)
@@ -152,21 +152,24 @@ export default function Search(props: { show: boolean }) {
   }
 
   useEffect(() => {
-    if (!images || !images?.documents || !videos || !videos.documents) return
+    if (!images || !videos) return
+    console.log('page:', page, images.documents, videos.documents)
+    if (!images.documents && !videos.documents) return
+
     // 보관함과 비교하여 liked 필드 추가
     const addLikedImageList = addIsLikedImage(images.documents)
     const addLikedVideoList = addIsLikedVideo(videos.documents)
 
     // 새로운 데이터에 모두 type 추가
-    const combinedResults = [
+    const combinedList = [
       ...addLikedImageList.map((item) => ({ ...item, type: 'image' })),
       ...addLikedVideoList.map((item) => ({ ...item, type: 'video' })),
     ]
 
     // 이미지, 비디오 최신순으로 정렬
-    const sortedDates = sortByDatetimeDesc(combinedResults)
+    const sortedDocs = sortByDatetimeDesc(combinedList)
 
-    setResults([...results, ...sortedDates])
+    setResults([...results, ...sortedDocs])
     setMetas({
       imageMeta: images.meta,
       videoMeta: videos.meta,
