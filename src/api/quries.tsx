@@ -1,4 +1,4 @@
-import { IImages, ISearchMedia } from '@/types/image'
+import { IImages, ISearchMedia, IVideos } from '@/types/image'
 import { instance } from './common'
 import { toast } from 'react-toastify'
 
@@ -13,7 +13,7 @@ export const getImages = async (params: ISearchMedia): Promise<IImages> => {
 }
 
 // GET 비디오 검색
-export const getVideos = async (params: ISearchMedia): Promise<IImages> => {
+export const getVideos = async (params: ISearchMedia): Promise<IVideos> => {
   return await instance
     .get(
       `/search/vclip?query=${params.query}&sort=${params.sort}&page=${params.page}&size=${params.size}`,

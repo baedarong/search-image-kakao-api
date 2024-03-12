@@ -1,6 +1,6 @@
 'use client'
 
-import { IImage } from '@/types/image'
+import { IImage, IVideo } from '@/types/image'
 import { formatDate } from '@/utils/dateConverter'
 import { useEffect, useState } from 'react'
 import Image from 'next/image'
@@ -11,13 +11,13 @@ import { toast } from 'react-toastify'
 // OK: 적혀있지 않은 내용은 자유롭게 작성하시면 됩니다. (요건을 침해하지 않는 범위에서 기능 추가 등)
 
 export default function Favorite(props: { show: boolean }) {
-  const [images, setImages] = useState<IImage[]>([])
+  const [docs, setDocs] = useState<(IImage | IVideo)[]>([])
 
   useEffect(() => {
     const existingImagesJSON = localStorage.getItem('myImages')
     if (existingImagesJSON) {
       const existingImages: IImage[] = JSON.parse(existingImagesJSON)
-      setImages(existingImages)
+      setDocs(existingImages)
     }
   }, [props.show]) // 컴포넌트가 처음 렌더링될 때만 실행
 
@@ -42,7 +42,7 @@ export default function Favorite(props: { show: boolean }) {
   */
   return (
     <div>
-      {images.length > 0 ? (
+      {docs.length > 0 ? (
         <div className="bg-white">
           <div className="mx-auto max-w-2xl px-4 py-6 sm:px-6 sm:py-6 lg:max-w-7xl lg:px-8">
             <div className="flex items-center justify-between space-x-4">
@@ -52,19 +52,19 @@ export default function Favorite(props: { show: boolean }) {
               </h2>
             </div>
             <div className="mt-6 grid grid-cols-1 gap-x-8 gap-y-8 sm:grid-cols-2 sm:gap-y-10 lg:grid-cols-4">
-              {images?.map((image, imageIndex) => (
+              {docs?.map((doc, docIndex) => (
                 <div
-                  key={imageIndex}
+                  key={docIndex}
                   className="group relative"
                   // onClick={() => handleRemoveImage(image)}
                 >
                   <div className="aspect-h-3 aspect-w-4 cursor-pointer overflow-hidden rounded-lg bg-gray-100">
                     <Image
-                      src={image.thumbnail_url}
-                      alt={image.thumbnail_url}
+                      src={doc.thumbnail_url ?? doc.thumbnail}
+                      alt={'imagealt'}
                       className="object-cover object-center"
-                      width={image.width}
-                      height={image.height}
+                      width={doc.width ?? 200}
+                      height={doc.height ?? 200}
                     />
                     {/* <div
                       className="flex items-end p-4 opacity-0 group-hover:opacity-100"
@@ -75,14 +75,9 @@ export default function Favorite(props: { show: boolean }) {
                       </div>
                     </div> */}
                   </div>
-                  <div className="mt-4 flex items-center justify-between space-x-8 text-base font-medium text-gray-900">
-                    <h3>
-                      <span aria-hidden="true" className="absolute inset-0" />
-                      {image.display_sitename}
-                    </h3>
-                  </div>
+                  <div className="mt-4 flex items-center justify-between space-x-8 text-base font-medium text-gray-900"></div>
                   <p className="mt-1 text-sm text-gray-500">
-                    {formatDate(image.datetime)}
+                    {formatDate(doc.datetime)}
                   </p>
                 </div>
               ))}

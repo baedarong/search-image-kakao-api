@@ -14,6 +14,7 @@ export interface IMeta {
 export interface IImage {
   collection: string
   thumbnail_url: string
+  thumbnail: string
   image_url: string
   width: number
   height: number
@@ -21,23 +22,36 @@ export interface IImage {
   doc_url: string
   datetime: string
   isLiked?: boolean
-}
-
-export interface IImages {
-  meta: IMeta
-  documents: IImage[]
+  type?: string
 }
 
 export interface IVideo {
   title: string
   play_time: number
+  thumbnail_url: string
   thumbnail: string
   url: string
+  width: number
+  height: number
   datetime: string
   author: string
+  isLiked?: boolean
+  type?: string
+}
+export interface IImages {
+  meta: IMeta
+  documents: IImage[]
 }
 
+export interface IDocument extends IVideo, IImage {}
 export interface IVideos {
   meta: IMeta
   documents: IVideo[]
+}
+
+export interface IDocuments {
+  imageMeta: IMeta
+  imageDocuments: IImage[]
+  videoMeta: IMeta
+  videoDocuments: IVideo[]
 }
