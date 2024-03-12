@@ -1,4 +1,4 @@
-import { getImages, getVideos } from '@/api/quries'
+import { getImages, getVideos } from '@/api/fetcher'
 import { ISearchMedia, IMeta } from '@/types/image'
 import { useQuery } from '@tanstack/react-query'
 

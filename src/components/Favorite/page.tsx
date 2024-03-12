@@ -33,8 +33,6 @@ export default function Favorite(props: { show: boolean }) {
             ? image.thumbnail_url !== clickedDoc.thumbnail_url
             : image.thumbnail !== clickedDoc.thumbnail,
         )
-
-        console.log(updatedImages)
         localStorage.setItem('myImages', JSON.stringify(updatedImages))
         setDocs(updatedImages)
         toast.success('보관함에서 이미지를 삭제했습니다!')
