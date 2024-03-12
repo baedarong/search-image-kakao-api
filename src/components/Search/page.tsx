@@ -3,7 +3,6 @@
 import useImageQuery from '@/api/query/useImageQuery'
 import { IDocument, IImage, IMeta, ISearchMedia, IVideo } from '@/types/image'
 import { formatDate } from '@/utils/dateConverter'
-import { HeartIcon } from '@heroicons/react/24/outline'
 import clsx from 'clsx'
 
 import Image from 'next/image'
