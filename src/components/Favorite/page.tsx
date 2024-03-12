@@ -16,30 +16,31 @@ export default function Favorite(props: { show: boolean }) {
   useEffect(() => {
     const existingImagesJSON = localStorage.getItem('myImages')
     if (existingImagesJSON) {
-      const existingImages: IImage[] = JSON.parse(existingImagesJSON)
+      const existingImages: (IImage | IVideo)[] = JSON.parse(existingImagesJSON)
       setDocs(existingImages)
     }
   }, [props.show]) // 컴포넌트가 처음 렌더링될 때만 실행
 
-  /*
-  const handleRemoveImage = (clickedImage: IImage) => {
+  const handleRemoveImage = (clickedDoc: IImage | IVideo) => {
     try {
       const existingImagesJSON = localStorage.getItem('myImages')
       if (existingImagesJSON) {
         const existingImages: IImage[] = JSON.parse(existingImagesJSON)
         // 클릭된 이미지를 제외하고 다시 로컬 스토리지에 저장
-        const updatedImages = existingImages.filter(
-          (image) => image.image_url !== clickedImage.image_url,
+        const updatedImages = existingImages.filter((image) =>
+          image.type === 'image'
+            ? image.thumbnail_url !== clickedDoc.thumbnail_url
+            : image.thumbnail === clickedDoc.thumbnail,
         )
         localStorage.setItem('myImages', JSON.stringify(updatedImages))
-        setImages(updatedImages)
+        setDocs(updatedImages)
         toast.success('보관함에서 이미지를 삭제했습니다!')
       }
     } catch (error) {
       toast.error('보관함에서 이미지를 제거하는데 실패했습니다!')
     }
   }
-  */
+
   return (
     <div>
       {docs.length > 0 ? (
@@ -56,7 +57,7 @@ export default function Favorite(props: { show: boolean }) {
                 <div
                   key={docIndex}
                   className="group relative"
-                  // onClick={() => handleRemoveImage(image)}
+                  onClick={() => handleRemoveImage(doc)}
                 >
                   <div className="aspect-h-3 aspect-w-4 cursor-pointer overflow-hidden rounded-lg bg-gray-100">
                     <Image
@@ -66,14 +67,14 @@ export default function Favorite(props: { show: boolean }) {
                       width={doc.width ?? 200}
                       height={doc.height ?? 200}
                     />
-                    {/* <div
+                    <div
                       className="flex items-end p-4 opacity-0 group-hover:opacity-100"
                       aria-hidden="true"
                     >
                       <div className="w-full  rounded-md bg-white bg-opacity-75 px-4 py-2 text-center text-sm font-medium text-gray-900 backdrop-blur backdrop-filter">
                         삭제하기
                       </div>
-                    </div> */}
+                    </div>
                   </div>
                   <div className="mt-4 flex items-center justify-between space-x-8 text-base font-medium text-gray-900"></div>
                   <p className="mt-1 text-sm text-gray-500">

@@ -235,8 +235,10 @@ export default function Search(props: { show: boolean }) {
         existingImages = JSON.parse(existingImagesJSON)
 
         // 이미지가 이미 존재하는지 확인
-        const existingImageIndex = existingImages.findIndex(
-          (existingImage) => existingImage.datetime === docs.datetime,
+        const existingImageIndex = existingImages.findIndex((existingImage) =>
+          docs.type === 'image'
+            ? existingImage.thumbnail_url === docs.thumbnail_url
+            : existingImage.thumbnail === docs.thumbnail,
         )
 
         if (existingImageIndex !== -1) {
